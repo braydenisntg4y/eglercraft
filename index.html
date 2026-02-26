@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Voxel Game Engine</title>
     <style>
         body { margin: 0; overflow: hidden; }
@@ -9,57 +10,57 @@
     </style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
+    <canvas id="gameCanvas"></canvas>
     <script>
-        const canvas = document.getElementById('canvas');
+        const canvas = document.getElementById('gameCanvas');
         const gl = canvas.getContext('webgl');
-        if (!gl) {
-            console.error('WebGL not supported');
-        }
+
+        // Resize the canvas to fill the browser window
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        // Camera settings
+        // Set up camera and controls
         let cameraPosition = [0, 0, -5];
         let cameraDirection = [0, 0, 0];
         let cameraUp = [0, 1, 0];
 
-        // Movement variables
-        let keys = {};
-        window.addEventListener('keydown', (event) => { keys[event.code] = true; });
-        window.addEventListener('keyup', (event) => { keys[event.code] = false; });
-
-        // Mouse look variables
-        let lastMouseX = window.innerWidth / 2;
-        let lastMouseY = window.innerHeight / 2;
-        let yaw = 0;
-        let pitch = 0;
-
-        window.addEventListener('mousemove', (event) => {
-            const sensitivity = 0.1;
-            yaw += (event.clientX - lastMouseX) * sensitivity;
-            pitch -= (event.clientY - lastMouseY) * sensitivity;
-            lastMouseX = event.clientX;
-            lastMouseY = event.clientY;
+        // Handle keyboard inputs
+        window.addEventListener('keydown', (event) => {
+            switch (event.key) {
+                case 'w':
+                    cameraPosition[2] += 0.1; // move forward
+                    break;
+                case 's':
+                    cameraPosition[2] -= 0.1; // move backward
+                    break;
+                case 'a':
+                    cameraPosition[0] -= 0.1; // move left
+                    break;
+                case 'd':
+                    cameraPosition[0] += 0.1; // move right
+                    break;
+            }
         });
 
-        function updateCamera() {
-            const speed = 0.1;
-            if (keys['KeyW']) cameraPosition[2] += speed;
-            if (keys['KeyS']) cameraPosition[2] -= speed;
-            if (keys['KeyA']) cameraPosition[0] += speed;
-            if (keys['KeyD']) cameraPosition[0] -= speed;
-            // Add more camera update logic here
+        // Initialize renderer
+        function initialize() {
+            // Set up shaders, buffers, and textures here
         }
 
+        // Main render loop
         function render() {
-            updateCamera();
+            // Clear the canvas
             gl.clearColor(0.5, 0.7, 1.0, 1.0);
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-            // Add your rendering logic here
+
+            // Render the terrain and blocks
+            // Implement lighting and texture mapping here
+
             requestAnimationFrame(render);
         }
 
+        // Start the engine
+        initialize();
         render();
     </script>
 </body>
