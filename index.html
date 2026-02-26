@@ -3,42 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EglerCraft</title>
+    <title>3D Voxel Game Engine</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #ececec;
-            color: #333;
-            text-align: center;
-        }
-        canvas {
-            border: 1px solid #000;
-            background-color: #fff;
-        }
+        canvas { display: block; margin: auto; }
     </style>
 </head>
 <body>
-    <h1>Welcome to EglerCraft</h1>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <canvas id="glcanvas" width="800" height="600"></canvas>
     <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-
-        // Game variables
-        let player = { x: 50, y: 50, size: 20 }; 
-
-        function drawPlayer() {
-            ctx.fillStyle = 'blue';
-            ctx.fillRect(player.x, player.y, player.size, player.size);
+        var canvas = document.getElementById('glcanvas');
+        var gl = canvas.getContext('webgl');
+        if (!gl) {
+            console.log('WebGL not supported, falling back on experimental-webgl');
+            gl = canvas.getContext('experimental-webgl');
         }
 
-        function gameLoop() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawPlayer();
-            requestAnimationFrame(gameLoop);
+        if (!gl) {
+            alert('Your browser does not support WebGL');
         }
 
-        gameLoop();
+        // Create a simple Cube
+        var vertices = [ 
+            -1.0, -1.0, -1.0,  
+             1.0, -1.0, -1.0,  
+             1.0,  1.0, -1.0,  
+            -1.0,  1.0, -1.0,  
+            -1.0, -1.0,  1.0,  
+             1.0, -1.0,  1.0,  
+             1.0,  1.0,  1.0,  
+            -1.0,  1.0,  1.0  
+        ];
+
+        // Define the cube's vertices and color here...
+
+        // Terrain Generation Logic
+        function generateTerrain() {
+            // Code for terrain generation
+        }
+
+        // Lighting Logic
+        function applyLighting() {
+            // Code for lighting effects
+        }
+
+        // Block Rendering
+        function renderBlocks() {
+            // Code for rendering blocks
+        }
+
+        function drawScene() {
+            gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+            // Execute terrain generation, lighting, and block rendering
+            generateTerrain();
+            applyLighting();
+            renderBlocks();
+            requestAnimationFrame(drawScene);
+        }
+
+        drawScene();
     </script>
 </body>
 </html>
