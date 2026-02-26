@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Voxel Game Engine</title>
     <style>
-        body { margin: 0; }
+        body { margin: 0; overflow: hidden; }
         canvas { display: block; }
     </style>
 </head>
@@ -14,63 +14,45 @@
     <script>
         const canvas = document.getElementById('gameCanvas');
         const gl = canvas.getContext('webgl');
-        if (!gl) {
-            alert('WebGL not supported!');
-        }
 
-        // Set canvas size to full screen
+        // Set up the canvas size
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
 
-        // Vertex shader
-        const vsSource = `
-            attribute vec4 aVertexPosition;
-            void main(void) {
-                gl_Position = aVertexPosition;
-            }
-        `;
+        // Initialize shaders, buffers, and other resources
 
-        // Fragment shader
-        const fsSource = `
-            void main(void) {
-                gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0); // Gray color
-            }
-        `;
-
-        // Initialize shader program
-        function initShaderProgram(gl, vsSource, fsSource) {
-            const vertexShader = gl.createShader(gl.VERTEX_SHADER);
-            gl.shaderSource(vertexShader, vsSource);
-            gl.compileShader(vertexShader);
-
-            const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-            gl.shaderSource(fragmentShader, fsSource);
-            gl.compileShader(fragmentShader);
-
-            const shaderProgram = gl.createProgram();
-            gl.attachShader(shaderProgram, vertexShader);
-            gl.attachShader(shaderProgram, fragmentShader);
-            gl.linkProgram(shaderProgram);
-
-            return shaderProgram;
-        }
-
-        const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
-
-        // Render loop
-        function render() {
-            gl.clearColor(0.0, 0.0, 0.0, 1.0);
-            gl.clear(gl.COLOR_BUFFER_BIT);
-            gl.useProgram(shaderProgram);
-            // Here you would normally set up your buffers and draw the 3D world
+        function init() {
+            // Initialization logic
             requestAnimationFrame(render);
         }
 
-        render();
+        function render() {
+            // Rendering logic
+            requestAnimationFrame(render);
+        }
+
+        function handleInput() {
+            // Input handling for FPS controls (WASD + mouse)
+
+            window.addEventListener('keydown', (event) => {
+                if (event.key === 'w') { /* Move forward */ }
+                if (event.key === 'a') { /* Move left */ }
+                if (event.key === 's') { /* Move backward */ }
+                if (event.key === 'd') { /* Move right */ }
+            });
+        }
+
+        // Full-screen rendering
+        canvas.addEventListener('click', () => {
+            if (canvas.requestFullscreen) {
+                canvas.requestFullscreen();
+            } else if (canvas.webkitRequestFullscreen) {
+                canvas.webkitRequestFullscreen();
+            }
+        });
+
+        init();
+        handleInput();
     </script>
 </body>
 </html>
