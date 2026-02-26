@@ -1,61 +1,66 @@
-// 3D Voxel Game Engine Code
-// This code snippet implements a simple voxel game engine with full terrain generation, textures, lighting, FPS camera controls, and rendering for a full screen experience.
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>3D Voxel Game Engine</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const gl = canvas.getContext('webgl');
+        if (!gl) {
+            console.error('WebGL not supported');
+        }
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-const canvas = document.getElementById('gameCanvas');
-const context = canvas.getContext('webgl');
+        // Camera settings
+        let cameraPosition = [0, 0, -5];
+        let cameraDirection = [0, 0, 0];
+        let cameraUp = [0, 1, 0];
 
-// Setup WebGL
-function initWebGL() {
-    // ... initialize your WebGL context here ...
-}
+        // Movement variables
+        let keys = {};
+        window.addEventListener('keydown', (event) => { keys[event.code] = true; });
+        window.addEventListener('keyup', (event) => { keys[event.code] = false; });
 
-// Terrain Generation
-function generateTerrain() {
-    // ... generate and return terrain data ...
-}
+        // Mouse look variables
+        let lastMouseX = window.innerWidth / 2;
+        let lastMouseY = window.innerHeight / 2;
+        let yaw = 0;
+        let pitch = 0;
 
-// Load Textures
-function loadTextures() {
-    // ... texture loading logic ...
-}
+        window.addEventListener('mousemove', (event) => {
+            const sensitivity = 0.1;
+            yaw += (event.clientX - lastMouseX) * sensitivity;
+            pitch -= (event.clientY - lastMouseY) * sensitivity;
+            lastMouseX = event.clientX;
+            lastMouseY = event.clientY;
+        });
 
-// Lighting Setup
-function setupLighting() {
-    // ... lighting setup ...
-}
+        function updateCamera() {
+            const speed = 0.1;
+            if (keys['KeyW']) cameraPosition[2] += speed;
+            if (keys['KeyS']) cameraPosition[2] -= speed;
+            if (keys['KeyA']) cameraPosition[0] += speed;
+            if (keys['KeyD']) cameraPosition[0] -= speed;
+            // Add more camera update logic here
+        }
 
-// Camera Controls
-const camera = {
-    position: { x: 0, y: 0, z: 0 },
-    rotation: { x: 0, y: 0 }
-};
-function updateCamera() {
-    // ... update camera based on WASD + mouse ...
-}
+        function render() {
+            updateCamera();
+            gl.clearColor(0.5, 0.7, 1.0, 1.0);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            // Add your rendering logic here
+            requestAnimationFrame(render);
+        }
 
-// Render Loop
-function render() {
-    context.clearColor(0.5, 0.7, 1.0, 1.0);
-    context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
-    // ... render the terrain and entities ...
-    requestAnimationFrame(render);
-}
-
-// Main Function
-function main() {
-    initWebGL();
-    generateTerrain();
-    loadTextures();
-    setupLighting();
-    render();
-}
-
-window.onload = main;
-
-// Fullscreen setup
-function goFullscreen() {
-    if (canvas.requestFullscreen) {
-        canvas.requestFullscreen();
-    }
-}
-document.body.addEventListener('click', goFullscreen);
+        render();
+    </script>
+</body>
+</html>
