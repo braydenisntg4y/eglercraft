@@ -5,64 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Voxel Game Engine</title>
     <style>
-        canvas { display: block; margin: auto; }
+        body { margin: 0; }
+        canvas { display: block; }
     </style>
 </head>
 <body>
-    <canvas id="glcanvas" width="800" height="600"></canvas>
+    <canvas id="gameCanvas"></canvas>
     <script>
-        var canvas = document.getElementById('glcanvas');
-        var gl = canvas.getContext('webgl');
+        const canvas = document.getElementById('gameCanvas');
+        const gl = canvas.getContext('webgl');
         if (!gl) {
-            console.log('WebGL not supported, falling back on experimental-webgl');
-            gl = canvas.getContext('experimental-webgl');
+            alert('WebGL not supported!');
         }
 
-        if (!gl) {
-            alert('Your browser does not support WebGL');
+        // Set canvas size to full screen
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Vertex shader
+        const vsSource = `
+            attribute vec4 aVertexPosition;
+            void main(void) {
+                gl_Position = aVertexPosition;
+            }
+        `;
+
+        // Fragment shader
+        const fsSource = `
+            void main(void) {
+                gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0); // Gray color
+            }
+        `;
+
+        // Initialize shader program
+        function initShaderProgram(gl, vsSource, fsSource) {
+            const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+            gl.shaderSource(vertexShader, vsSource);
+            gl.compileShader(vertexShader);
+
+            const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+            gl.shaderSource(fragmentShader, fsSource);
+            gl.compileShader(fragmentShader);
+
+            const shaderProgram = gl.createProgram();
+            gl.attachShader(shaderProgram, vertexShader);
+            gl.attachShader(shaderProgram, fragmentShader);
+            gl.linkProgram(shaderProgram);
+
+            return shaderProgram;
         }
 
-        // Create a simple Cube
-        var vertices = [ 
-            -1.0, -1.0, -1.0,  
-             1.0, -1.0, -1.0,  
-             1.0,  1.0, -1.0,  
-            -1.0,  1.0, -1.0,  
-            -1.0, -1.0,  1.0,  
-             1.0, -1.0,  1.0,  
-             1.0,  1.0,  1.0,  
-            -1.0,  1.0,  1.0  
-        ];
+        const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
 
-        // Define the cube's vertices and color here...
-
-        // Terrain Generation Logic
-        function generateTerrain() {
-            // Code for terrain generation
-        }
-
-        // Lighting Logic
-        function applyLighting() {
-            // Code for lighting effects
-        }
-
-        // Block Rendering
-        function renderBlocks() {
-            // Code for rendering blocks
-        }
-
-        function drawScene() {
+        // Render loop
+        function render() {
             gl.clearColor(0.0, 0.0, 0.0, 1.0);
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-            // Execute terrain generation, lighting, and block rendering
-            generateTerrain();
-            applyLighting();
-            renderBlocks();
-            requestAnimationFrame(drawScene);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            gl.useProgram(shaderProgram);
+            // Here you would normally set up your buffers and draw the 3D world
+            requestAnimationFrame(render);
         }
 
-        drawScene();
+        render();
     </script>
 </body>
 </html>
